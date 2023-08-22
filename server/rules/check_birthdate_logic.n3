@@ -1,0 +1,127 @@
+@prefix ex: <http://example.org/> .
+
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix crypto: <http://www.w3.org/2000/10/swap/crypto#>.
+@prefix graph: <http://www.w3.org/2000/10/swap/graph#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix time: <http://www.w3.org/2000/10/swap/time#> .
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix dialog: <urn:dialog:> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+@prefix rulelogic: <urn:rule:logic:>.
+
+# Check for present actor
+(
+    _:Message _:Actor
+    _:Result _:Warning
+
+    _:AssertedGraph
+    _:SCOPE
+) log:onNegativeSurface {
+
+    _:Message a dialog:DialogMessage.
+
+    (
+       { _:Message dialog:actor _:Actor. }
+       { _:AssertedGraph log:equalTo {} }
+       { 
+            _:AssertedGraph log:equalTo {
+                () log:onWarningSurface {
+                    _:Warning a dialog:Warning;
+                        dialog:message "No actor was present in the dialog message. No alcoholic beverages will be displayed";
+                        dialog:questions { 
+                            (_:RequestedActor) log:onQuestionSurface { 
+                                _:Message dialog:actor _:RequestedActor.
+                                () log:onAnswerSurface {
+                                    _:Message dialog:actor _:RequestedActor.
+                                }.
+                            }. 
+                        }.
+                }
+            }
+        }
+    ) log:ifThenElseIn _:SCOPE .
+    () log:onNegativeSurface _:AssertedGraph.
+}.
+
+# Check for present birthdate
+(
+    _:Message _:Actor _:BirthDate
+    _:Result _:Warning
+    
+    _:AssertedGraph
+    _:SCOPE
+) log:onNegativeSurface {
+
+    _:Message a dialog:DialogMessage.
+    _:Message dialog:actor _:Actor. 
+
+    (
+       { _:Actor vcard:bday _:BirthDate. }
+       { _:AssertedGraph log:equalTo {} }
+       { 
+            _:AssertedGraph log:equalTo {
+                () log:onWarningSurface {
+                    _:Warning a dialog:Warning;
+                        dialog:message "No actor birthdate was given. No alcoholic beverages will be displayed";
+                        dialog:questions { 
+                            (_:Message _:RequestedBirthDate)  log:onQuestionSurface { 
+                                _:Actor vcard:bday _:RequestedBirthDate.
+                                () log:onAnswerSurface {
+                                _:Actor vcard:bday _:RequestedBirthDate.
+                                }.
+                            } 
+                        }.
+                }
+            }
+        }
+    ) log:ifThenElseIn _:SCOPE .
+    () log:onNegativeSurface _:AssertedGraph.
+}.
+
+# Check if older than 18
+(
+    _:Message
+    _:Actor
+    _:BirthDate
+    
+    _:LocalTime
+    _:DateToCheck
+
+    _:AssertedGraph
+    _:Warning
+) log:onNegativeSurface {
+
+    _:Message a dialog:DialogMessage;
+        dialog:actor _:Actor.
+
+    _:Actor vcard:bday _:BirthDate.
+
+    "" time:localTime _:LocalTime.
+    (_:LocalTime "P18Y0M"^^xsd:yearMonthDuration) func:subtract-yearMonthDuration-from-dateTime _:DateToCheck.
+
+    # Check if the actor was born before 18 years ago
+
+    (
+        { _:BirthDate math:lessThan _:DateToCheck. }
+        { 
+            _:AssertedGraph log:equalTo { 
+                _:Actor a rulelogic:Adult.
+            }
+        }
+        { 
+            _:AssertedGraph log:equalTo {
+                () log:onWarningSurface {
+                    _:Warning a dialog:Warning;
+                        dialog:message "Actor is a minor. No alcoholic beverages will be displayed".
+                    # This does not warrant an additional question. We have sufficient information to decide we should not show alcoholic beverages
+                }
+            }
+        }
+    ) log:ifThenElseIn _:SCOPE .
+    () log:onNegativeSurface _:AssertedGraph.
+}.

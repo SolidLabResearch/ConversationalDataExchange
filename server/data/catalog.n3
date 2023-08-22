@@ -1,0 +1,38 @@
+@prefix ex: <http://example.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix catalog: <https://mystore.com/catalog/> .
+@prefix schema: <https://schema.org/> .
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+catalog: a ex:Catalog;
+  ex:contains catalog:item1, catalog:item2, catalog:item3, catalog:item4, catalog:item5.
+
+catalog:item1 a ex:Drink;
+  schema:name "Appelsap";
+  schema:price "2.00";
+  schema:priceCurrency "EUR".
+
+catalog:item2 a ex:Drink;
+  schema:name "Cola Zero 1.5L";
+  schema:price "3.00";
+  schema:priceCurrency "EUR".
+
+catalog:item3 a ex:Drink;
+  schema:name "Arizona large 1.5L";
+  schema:price "12.00";
+  schema:priceCurrency "EUR".
+
+catalog:item4 a ex:Drink;
+  schema:name "Jupiler 33cl";
+  schema:price "2.00";
+  schema:priceCurrency "EUR";
+  ex:containsAlcohol "true"^^xsd:boolean.
+
+catalog:item5 a ex:Drink;
+  schema:name "Jack Daniels Whisky";
+  schema:price "25.00";
+  schema:priceCurrency "EUR";
+  ex:containsAlcohol "true"^^xsd:boolean.

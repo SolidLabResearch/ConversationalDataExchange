@@ -1,0 +1,35 @@
+@prefix ex: <http://example.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix card: <https://myuserpod.com/rubend/profile/card#> .
+@prefix dialog: <urn:dialog:> .
+
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+
+# Contex part
+<urn:dialog:message:x123151532462dagwr1> a dialog:DialogMessage;
+    dialog:actor card:me;
+    dialog:issuer <https://myuserpod.com/>;
+    dialog:client <https://storeapp.com>;
+    dialog:contents {
+        # Data part
+        card:me a foaf:Person.
+    };
+    dialog:questions {        
+        (
+            _:Something _:P _:O
+        ) log:onQuestionSurface {
+            _:Something a ex:Drink.
+            _:Something _:P _:O.
+            () log:onAnswerSurface {
+                _:Something _:P _:O.
+            }.
+        }.
+    } .
+

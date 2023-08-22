@@ -1,0 +1,75 @@
+@prefix ex: <http://example.org/> .
+
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix crypto: <http://www.w3.org/2000/10/swap/crypto#>.
+@prefix graph: <http://www.w3.org/2000/10/swap/graph#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix time: <http://www.w3.org/2000/10/swap/time#> .
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix dialog: <urn:dialog:> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+@prefix rulelogic: <urn:rule:logic:>.
+
+# Dispay drink items
+(
+  _:Item _:P _:O
+  _:Message
+  _:Actor
+  _:AssertedGraph
+
+  _:SCOPE
+) log:onNegativeSurface {
+    
+    <https://mystore.com/catalog/> a ex:Catalog;
+        ex:contains _:Item.
+        
+    _:Item a ex:Drink.
+    _:Item _:P _:O.
+
+    (
+        { 
+            _:Item ex:containsAlcohol "true"^^xsd:boolean.
+        }
+        { 
+            # If the item contains alcohol
+            (
+                {
+                    # Check if the message sender is 18+
+                    _:Message a dialog:DialogMessage.
+                    _:Message dialog:actor _:Actor. 
+                    _:Actor a rulelogic:Adult.
+                }
+                {
+                    # Sender is 18+
+                    _:AssertedGraph log:equalTo {
+                        () log:onQuerySurface{
+                            _:Item _:P _:O.
+                        }
+                    } 
+                }
+                {
+                    # Sender is not 18+
+                    _:AssertedGraph log:equalTo { } 
+                } 
+            )
+            log:ifThenElseIn _:SCOPE .
+        }
+        { 
+            _:AssertedGraph log:equalTo {
+                () log:onQuerySurface{
+                    _:Item _:P _:O.
+                }
+            } 
+        }
+    ) log:ifThenElseIn _:SCOPE .
+
+    () log:onNegativeSurface _:AssertedGraph .
+}.
+
+
+
+

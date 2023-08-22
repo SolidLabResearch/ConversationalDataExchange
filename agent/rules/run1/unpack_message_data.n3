@@ -1,0 +1,12 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix dialog: <urn:dialog:> .
+
+(
+    _:Message
+    _:ContentsGraph
+) log:onNegativeSurface {
+    _:Message a dialog:DialogMessage.
+    _:Message dialog:contents _:ContentsGraph.
+    () log:onNegativeSurface _:ContentsGraph.
+}.
+    

@@ -1,0 +1,7 @@
+@prefix ex: <http://example.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix businessprofile: <https://mystore.com/profile/> .
+
+businessprofile:entity a ex:Business.
+businessprofile:entity ex:issuer <https://goverment-store-index.org/> .
