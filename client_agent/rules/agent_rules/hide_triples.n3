@@ -1,0 +1,15 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+(
+    _:s _:p _:o
+) log:onQuestionSurface {
+    _:s _:p _:o.
+    _:p log:notEqualTo foaf:mbox.
+    _:p log:notEqualTo foaf:phone.
+    _:p log:notEqualTo log:onQuestionSurface.
+    _:p log:notEqualTo log:onNegativeSurface.
+    () log:onAnswerSurface {
+        _:s _:p _:o .
+    }.
+}.

@@ -1,0 +1,16 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix dialog: <urn:dialog:> .
+(
+    _:G
+    _:S _:P _:O
+) log:onQuestionSurface {
+    () log:onWarningSurface _:G.
+    _:G log:includes {
+        _:S _:P _:O.
+    }.
+    _:P log:notEqualTo dialog:questions.
+
+    () log:onAnswerSurface {
+        _:S _:P _:O.
+    }.
+}.

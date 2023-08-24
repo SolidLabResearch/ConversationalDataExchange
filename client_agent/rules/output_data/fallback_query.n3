@@ -1,0 +1,40 @@
+@prefix ex: <http://example.org/> .
+
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix crypto: <http://www.w3.org/2000/10/swap/crypto#>.
+@prefix graph: <http://www.w3.org/2000/10/swap/graph#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix time: <http://www.w3.org/2000/10/swap/time#> .
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix dialog: <urn:dialog:> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+@prefix rulelogic: <urn:rule:logic:>.
+
+(
+    _:SCOPE
+    _:S _:O
+    _:G
+) log:onNegativeSurface {
+
+    (
+        { _:SCOPE log:includes { _:S log:onQuestionSurface _:O. }. }
+        { _:G log:equalTo {}. }
+        {
+            _:G log:equalTo {
+                # Return all information if no question is asked
+                (_:S _:P _:O) log:onQuestionSurface {
+                    _:S _:P _:O.
+                    _:P log:notEqualTo dialog:onVerifiedSurface, dialog:onQuestionSurface, log:onNegativeSurface, log:onQuestionSurface, dialog:onDebugSurface.
+                    () log:onAnswerSurface {
+                        _:S _:P _:O.
+                    }.
+                }.
+            }.
+        }
+    ) log:ifThenElseIn _:SCOPE.
+    () log:onNegativeSurface _:G.
+}.

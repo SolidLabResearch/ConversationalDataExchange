@@ -1,0 +1,11 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix dialog: <urn:dialog:> .
+
+(
+    _:Graffiti _:G
+) log:onQuestionSurface {
+    _:Graffiti dialog:onQuestionSurface _:G.
+    () log:onAnswerSurface {
+        _:Graffiti log:onQuestionSurface _:G
+    }.
+}.

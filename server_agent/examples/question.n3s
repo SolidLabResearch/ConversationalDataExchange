@@ -1,0 +1,17 @@
+
+(
+    _:Something _:P _:O
+    _:Price
+) log:onQuestionSurface {
+    _:Something a ex:Drink.
+
+    _:Something schema:price _:Price.
+    _:Price math:lessThan "5"^^xsd:int.
+
+    _:Something _:P _:O.
+
+    () log:onAnswerSurface {
+        _:Something _:P _:O.
+    }.
+}.
+

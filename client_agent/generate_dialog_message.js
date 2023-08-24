@@ -8,25 +8,32 @@
  * @returns // The formatted dialog message
  */
 export function generateDialogMessage(actor, issuer, client, endpoint, contents, questions, warnings) { 
-    return (`
-@prefix ex: <http://example.org/> .
+    return (
+`@prefix ex: <http://example.org/> .
 @prefix dialog: <urn:dialog:> .
 @prefix log: <http://www.w3.org/2000/10/swap/log#> .
 
-<urn:dialog:message:${Date.now().toString()}> a dialog:DialogMessage;
+# Message context
+() dialog:onVerifiedSurface {
+    <urn:dialog:message:${Date.now().toString()}> a dialog:DialogMessage;
     dialog:actor <${actor}>;
     dialog:issuer <${issuer}>;
     dialog:client <${client}>;
     dialog:endpoint <${endpoint}>;
-    dialog:contents {
-        ${contents}
-    };
-    dialog:warnings {        
-        ${warnings}
-    }.
-    dialog:questions {        
-        ${questions}
-    }.
-`
+    dialog:contents <>.
+}.
+
+# Message data
+${contents.trim()}
+
+# Message questions
+${questions.trim()}
+
+${
+    warnings && warnings.trim() && 
+`# Debug information
+() dialog:onDebugSurface {
+${warnings.trim()}
+}.`}`
     )
 }

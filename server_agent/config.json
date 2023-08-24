@@ -1,0 +1,6 @@
+{
+  "actor": "https://mystore.com/profile/entity",
+  "issuer": "https://goverment-store-index.org/", 
+  "client": "https://mystore.com/agent/",
+  "endpoint": "https://mystore.com/agent/endpoint/"
+}

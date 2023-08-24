@@ -14,35 +14,58 @@
 
 @prefix rulelogic: <urn:rule:logic:>.
 
+# Assert validated birthdays
+(
+    _:Graffiti _:G
+    _:Actor _:BirthDate
+) log:onNegativeSurface {
+    _:Graffiti dialog:onVerifiedSurface _:G.
+    _:G log:includes {
+        _:Actor vcard:bday _:BirthDate.
+    }.
+    () log:onNegativeSurface {
+        _:Actor vcard:bday _:BirthDate .
+    }.
+}.
+
 # Check for present actor
 (
+    _:Graffiti _:G
     _:Message _:Actor
     _:Result _:Warning
 
     _:AssertedGraph
     _:SCOPE
 ) log:onNegativeSurface {
-
-    _:Message a dialog:DialogMessage.
-
     (
-       { _:Message dialog:actor _:Actor. }
-       { _:AssertedGraph log:equalTo {} }
-       { 
+        {
+            _:Graffiti dialog:onVerifiedSurface _:G.
+            _:G log:includes {
+                _:Message a dialog:DialogMessage.
+                _:Message dialog:actor _:Actor.
+            }
+        }
+        { _:AssertedGraph log:equalTo {} }
+        { 
             _:AssertedGraph log:equalTo {
                 () log:onWarningSurface {
                     _:Warning a dialog:Warning;
                         dialog:message "No actor was present in the dialog message. No alcoholic beverages will be displayed";
                         dialog:questions { 
-                            (_:RequestedActor) log:onQuestionSurface { 
-                                _:Message dialog:actor _:RequestedActor.
+                            (
+                                _:VerifiedSurface _:RequestedActor _:BirthDate
+                            ) dialog:onQuestionSurface { 
+                                () dialog:onVerifiedSurface _:VerifiedSurface.
                                 () log:onAnswerSurface {
-                                    _:Message dialog:actor _:RequestedActor.
+                                    _:VerifiedSurface log:includes {
+                                        _:Message dialog:actor _:RequestedActor.
+                                        _:RequestedActor vcard:bday _:BirthDate.
+                                    }.
                                 }.
                             }. 
                         }.
-                }
-            }
+                }.
+            }.
         }
     ) log:ifThenElseIn _:SCOPE .
     () log:onNegativeSurface _:AssertedGraph.
@@ -50,6 +73,7 @@
 
 # Check for present birthdate
 (
+    _:Graffiti _:G
     _:Message _:Actor _:BirthDate
     _:Result _:Warning
     
@@ -57,27 +81,29 @@
     _:SCOPE
 ) log:onNegativeSurface {
 
-    _:Message a dialog:DialogMessage.
-    _:Message dialog:actor _:Actor. 
-
+    _:Graffiti dialog:onVerifiedSurface _:G.
+    _:G log:includes {
+        _:Message a dialog:DialogMessage.
+        _:Message dialog:actor _:Actor.
+    }.
     (
-       { _:Actor vcard:bday _:BirthDate. }
-       { _:AssertedGraph log:equalTo {} }
+       {  _:Actor vcard:bday _:BirthDate. }
+       { _:AssertedGraph log:equalTo {}. }
        { 
             _:AssertedGraph log:equalTo {
                 () log:onWarningSurface {
                     _:Warning a dialog:Warning;
                         dialog:message "No actor birthdate was given. No alcoholic beverages will be displayed";
                         dialog:questions { 
-                            (_:Message _:RequestedBirthDate)  log:onQuestionSurface { 
+                            (_:RequestedBirthDate)  dialog:onQuestionSurface { 
                                 _:Actor vcard:bday _:RequestedBirthDate.
                                 () log:onAnswerSurface {
                                 _:Actor vcard:bday _:RequestedBirthDate.
                                 }.
                             } 
                         }.
-                }
-            }
+                }.
+            }.
         }
     ) log:ifThenElseIn _:SCOPE .
     () log:onNegativeSurface _:AssertedGraph.
@@ -85,6 +111,7 @@
 
 # Check if older than 18
 (
+    _:Graffiti _:G
     _:Message
     _:Actor
     _:BirthDate
@@ -96,9 +123,11 @@
     _:Warning
 ) log:onNegativeSurface {
 
-    _:Message a dialog:DialogMessage;
-        dialog:actor _:Actor.
-
+    _:Graffiti dialog:onVerifiedSurface _:G.
+    _:G log:includes {
+        _:Message a dialog:DialogMessage.
+        _:Message dialog:actor _:Actor.
+    }.
     _:Actor vcard:bday _:BirthDate.
 
     "" time:localTime _:LocalTime.
@@ -109,9 +138,7 @@
     (
         { _:BirthDate math:lessThan _:DateToCheck. }
         { 
-            _:AssertedGraph log:equalTo { 
-                _:Actor a rulelogic:Adult.
-            }
+            _:AssertedGraph log:equalTo { _:Actor a rulelogic:Adult. }.
         }
         { 
             _:AssertedGraph log:equalTo {
@@ -119,8 +146,8 @@
                     _:Warning a dialog:Warning;
                         dialog:message "Actor is a minor. No alcoholic beverages will be displayed".
                     # This does not warrant an additional question. We have sufficient information to decide we should not show alcoholic beverages
-                }
-            }
+                }.
+            }.
         }
     ) log:ifThenElseIn _:SCOPE .
     () log:onNegativeSurface _:AssertedGraph.

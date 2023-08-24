@@ -1,8 +1,0 @@
-@prefix log: <http://www.w3.org/2000/10/swap/log#> .
-
-(
-    _:G
-) log:onQuestionSurface {
-    () log:onWarningSurface _:G.
-    () log:onAnswerSurface _:G.
-}.

@@ -16,12 +16,13 @@
 
 # Dispay drink items
 (
-  _:Item _:P _:O
-  _:Message
-  _:Actor
-  _:AssertedGraph
+    _:Graffiti _:G
+    _:Item _:P _:O
+    _:Message
+    _:Actor
+    _:AssertedGraph
 
-  _:SCOPE
+    _:SCOPE
 ) log:onNegativeSurface {
     
     <https://mystore.com/catalog/> a ex:Catalog;
@@ -38,9 +39,13 @@
             # If the item contains alcohol
             (
                 {
+
+                    _:Graffiti dialog:onVerifiedSurface _:G.
+                    _:G log:includes {
+                        _:Message a dialog:DialogMessage.
+                        _:Message dialog:actor _:Actor.
+                    }.
                     # Check if the message sender is 18+
-                    _:Message a dialog:DialogMessage.
-                    _:Message dialog:actor _:Actor. 
                     _:Actor a rulelogic:Adult.
                 }
                 {

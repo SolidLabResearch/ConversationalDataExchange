@@ -1,0 +1,20 @@
+@prefix ex: <http://example.org/> .
+@prefix dialog: <urn:dialog:> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+
+# Message context
+() dialog:onVerifiedSurface {
+    <urn:dialog:message:1692892857518> a dialog:DialogMessage;
+    dialog:actor <https://myuserpod.com/rubend/profile/card#me>;
+    dialog:issuer <https://myuserpod.com/>;
+    dialog:client <https://storeapp.com>;
+    dialog:endpoint <https://myuserpod.com/agent/endpoint/>;
+    dialog:contents <>.
+}.
+
+# Message data
+<https://myuserpod.com/rubend/profile/card#me> <http://www.w3.org/2006/vcard/ns#bday> "1995-11-08T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>.
+
+# Message questions
+
+

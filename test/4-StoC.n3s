@@ -1,0 +1,46 @@
+@prefix ex: <http://example.org/> .
+@prefix dialog: <urn:dialog:> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+
+# Message context
+() dialog:onVerifiedSurface {
+    <urn:dialog:message:1692892859069> a dialog:DialogMessage;
+    dialog:actor <https://mystore.com/profile/entity>;
+    dialog:issuer <https://goverment-store-index.org/>;
+    dialog:client <https://mystore.com/agent/>;
+    dialog:endpoint <https://mystore.com/agent/endpoint/>;
+    dialog:contents <>.
+}.
+
+# Message data
+<https://mystore.com/catalog/item1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Drink>.
+<https://mystore.com/catalog/item2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Drink>.
+<https://mystore.com/catalog/item3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Drink>.
+<https://mystore.com/catalog/item4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Drink>.
+<https://mystore.com/catalog/item5> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Drink>.
+<https://mystore.com/catalog/item1> <https://schema.org/name> "Appelsap".
+<https://mystore.com/catalog/item2> <https://schema.org/name> "Cola Zero 1.5L".
+<https://mystore.com/catalog/item3> <https://schema.org/name> "Arizona large 1.5L".
+<https://mystore.com/catalog/item4> <https://schema.org/name> "Jupiler 33cl".
+<https://mystore.com/catalog/item5> <https://schema.org/name> "Jack Daniels Whisky".
+<https://mystore.com/catalog/item1> <https://schema.org/popularity> "0.73"^^<http://www.w3.org/2001/XMLSchema#float>.
+<https://mystore.com/catalog/item2> <https://schema.org/popularity> "0.94"^^<http://www.w3.org/2001/XMLSchema#float>.
+<https://mystore.com/catalog/item3> <https://schema.org/popularity> "0.23"^^<http://www.w3.org/2001/XMLSchema#float>.
+<https://mystore.com/catalog/item4> <https://schema.org/popularity> "0.85"^^<http://www.w3.org/2001/XMLSchema#float>.
+<https://mystore.com/catalog/item5> <https://schema.org/popularity> "0.34"^^<http://www.w3.org/2001/XMLSchema#float>.
+<https://mystore.com/catalog/item1> <https://schema.org/price> "2.00"^^<http://www.w3.org/2001/XMLSchema#float>.
+<https://mystore.com/catalog/item2> <https://schema.org/price> "3.00"^^<http://www.w3.org/2001/XMLSchema#float>.
+<https://mystore.com/catalog/item3> <https://schema.org/price> "12.00"^^<http://www.w3.org/2001/XMLSchema#float>.
+<https://mystore.com/catalog/item4> <https://schema.org/price> "2.00"^^<http://www.w3.org/2001/XMLSchema#float>.
+<https://mystore.com/catalog/item5> <https://schema.org/price> "25.00"^^<http://www.w3.org/2001/XMLSchema#float>.
+<https://mystore.com/catalog/item1> <https://schema.org/priceCurrency> "EUR".
+<https://mystore.com/catalog/item2> <https://schema.org/priceCurrency> "EUR".
+<https://mystore.com/catalog/item3> <https://schema.org/priceCurrency> "EUR".
+<https://mystore.com/catalog/item4> <https://schema.org/priceCurrency> "EUR".
+<https://mystore.com/catalog/item5> <https://schema.org/priceCurrency> "EUR".
+<https://mystore.com/catalog/item4> <http://example.org/containsAlcohol> true.
+<https://mystore.com/catalog/item5> <http://example.org/containsAlcohol> true.
+
+# Message questions
+
+

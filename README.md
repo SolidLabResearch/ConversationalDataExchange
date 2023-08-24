@@ -23,16 +23,26 @@ node agent.js -p <port> -d ../server/data/ -r ../server/rules
 This will start up the agent that can respond to questions
 
 ## Agent data
-The service agent things are stored in `./server/data/catalog.n3`
+The service agent things are stored in `./server_agent/data/catalog.n3`
 The goal of this demonstrator, is to show that we can enable dynamic dialog interaction
 that allows the asking for age and depending on the availble information will show alcoholic beverages or not
 
-## Asking questions
+## Setup experiment
 
-Now you can start asking questions to the agent!
-For this, I advise to use a tool such as PostMan.
+### Start client agent
+```
+cd client_agent
+node agent.js -p 2345 -c config.json
+```
 
-To communicate with the agent, send a `POST` request to `localhost:<port>`.
-Set the `Content-Type` header to `text/n3`/
+### start server agent
+```
+cd server_agent
+node agent.js -p 3456 -c config.json
+```
 
-Example message bodies can be found in the `examples/` directory.
+### run experiment
+```
+cd test
+bash test.sh
+```

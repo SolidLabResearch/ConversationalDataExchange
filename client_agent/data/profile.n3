@@ -1,0 +1,23 @@
+@prefix ex: <http://example.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix card: <https://myuserpod.com/rubend/profile/card#> .
+@prefix dialog: <urn:dialog:> .
+
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+
+<https://myuserpod.com/rubend/profile/card> rdf:type foaf:PersonalProfileDocument ;
+    foaf:maker <https://myuserpod.com/rubend/profile/card#me> ;
+    foaf:primaryTopic <https://myuserpod.com/rubend/profile/card#me> .
+
+<https://myuserpod.com/rubend/profile/card#me> a foaf:Person;
+    foaf:name "Ruben D.";
+    vcard:bday "1995-11-08T00:00:00Z"^^xsd:dateTime;
+    foaf:mbox <mailto:rubend@mailservice.org>;
+    foaf:phone <tel:0032400000000>.

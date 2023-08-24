@@ -1,0 +1,13 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+
+(
+    _:s _:p _:o
+) log:onQuestionSurface {
+    _:s _:p _:o.
+    _:p log:notEqualTo log:onWarningSurface.
+    _:p log:notEqualTo log:onQuestionSurface.
+    _:p log:notEqualTo log:onNegativeSurface.
+    () log:onAnswerSurface {
+        _:s _:p _:o .
+    }.
+}.

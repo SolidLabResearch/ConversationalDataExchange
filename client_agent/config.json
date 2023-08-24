@@ -1,0 +1,6 @@
+{
+  "actor": "https://myuserpod.com/rubend/profile/card#me",
+  "issuer": "https://myuserpod.com/", 
+  "client": "https://storeapp.com",
+  "endpoint": "https://myuserpod.com/agent/endpoint/"
+}

@@ -12,27 +12,32 @@ catalog: a ex:Catalog;
 
 catalog:item1 a ex:Drink;
   schema:name "Appelsap";
-  schema:price "2.00";
+  schema:popularity "0.73"^^xsd:float;
+  schema:price "2.00"^^xsd:float;
   schema:priceCurrency "EUR".
 
 catalog:item2 a ex:Drink;
   schema:name "Cola Zero 1.5L";
-  schema:price "3.00";
+  schema:popularity "0.94"^^xsd:float;
+  schema:price "3.00"^^xsd:float;
   schema:priceCurrency "EUR".
 
 catalog:item3 a ex:Drink;
   schema:name "Arizona large 1.5L";
-  schema:price "12.00";
+  schema:popularity "0.23"^^xsd:float;
+  schema:price "12.00"^^xsd:float;
   schema:priceCurrency "EUR".
 
 catalog:item4 a ex:Drink;
   schema:name "Jupiler 33cl";
-  schema:price "2.00";
+  schema:popularity "0.85"^^xsd:float;
+  schema:price "2.00"^^xsd:float;
   schema:priceCurrency "EUR";
   ex:containsAlcohol "true"^^xsd:boolean.
 
 catalog:item5 a ex:Drink;
   schema:name "Jack Daniels Whisky";
-  schema:price "25.00";
+  schema:popularity "0.34"^^xsd:float;
+  schema:price "25.00"^^xsd:float;
   schema:priceCurrency "EUR";
   ex:containsAlcohol "true"^^xsd:boolean.
