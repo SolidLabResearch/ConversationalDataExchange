@@ -44,5 +44,5 @@ node agent.js -p 3456 -c config.json
 ### run experiment
 ```
 cd test
-bash test.sh
+bash run.sh
 ```

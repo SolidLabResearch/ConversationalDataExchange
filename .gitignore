@@ -2,3 +2,6 @@
 **/node_modules/
 client/
 old/
+test/2-StoC.n3s
+test/3-CtoS.n3s
+test/4-StoC.n3s
