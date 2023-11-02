@@ -4,7 +4,7 @@
 
 # Message context
 () dialog:onVerifiedSurface {
-    <urn:dialog:message:1692892857041> a dialog:DialogMessage;
+    <urn:dialog:message:1698940290913> a dialog:DialogMessage;
     dialog:actor <https://mystore.com/profile/entity>;
     dialog:issuer <https://goverment-store-index.org/>;
     dialog:client <https://mystore.com/agent/>;
@@ -39,6 +39,6 @@
 
 # Debug information
 () dialog:onDebugSurface {
-_:e_sk_63_1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:dialog:Warning>.
-_:e_sk_63_1 <urn:dialog:message> "No actor birthdate was given. No alcoholic beverages will be displayed".
+_:e_sk_64_1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:dialog:Warning>.
+_:e_sk_64_1 <urn:dialog:message> "No actor birthdate was given. No alcoholic beverages will be displayed".
 }.

@@ -4,7 +4,7 @@
 
 # Message context
 () dialog:onVerifiedSurface {
-    <urn:dialog:message:1692892857518> a dialog:DialogMessage;
+    <urn:dialog:message:1698940291481> a dialog:DialogMessage;
     dialog:actor <https://myuserpod.com/rubend/profile/card#me>;
     dialog:issuer <https://myuserpod.com/>;
     dialog:client <https://storeapp.com>;
