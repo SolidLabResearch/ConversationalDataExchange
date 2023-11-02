@@ -4,7 +4,7 @@
 
 # Message context
 () dialog:onVerifiedSurface {
-    <urn:dialog:message:1692892859069> a dialog:DialogMessage;
+    <urn:dialog:message:1698940292173> a dialog:DialogMessage;
     dialog:actor <https://mystore.com/profile/entity>;
     dialog:issuer <https://goverment-store-index.org/>;
     dialog:client <https://mystore.com/agent/>;

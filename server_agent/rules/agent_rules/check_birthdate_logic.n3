@@ -121,6 +121,7 @@
 
     _:AssertedGraph
     _:Warning
+    _:SCOPE
 ) log:onNegativeSurface {
 
     _:Graffiti dialog:onVerifiedSurface _:G.

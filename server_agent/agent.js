@@ -1,21 +1,9 @@
-import * as http from "http"
 import { program } from "commander"
-import { exec } from "child_process"
-import { existsSync, mkdirSync, readFile, readFileSync, writeFileSync } from "fs"
+import { SwiplEye, queryOnce } from "eyereasoner"
+import { readFileSync } from "fs"
+import * as http from "http"
 import path from "path"
 import { generateDialogMessage } from "./generate_dialog_message.js"
-
-let intermediateDir = path.join(process.cwd(), '.intermediary/')
-    
-let message_file = path.join(intermediateDir, "message.n3s")
-let message_data = path.join(intermediateDir, "message_data.n3s")
-let message_context = path.join(intermediateDir, "message_context.n3s")
-let message_questions = path.join(intermediateDir, "message_questions.n3s")
-let intermediate_output = path.join(intermediateDir, "intermediate_output.n3s")
-let output_data = path.join(intermediateDir, "output_data.n3s")
-let output_questions = path.join(intermediateDir, "output_questions.n3s")
-let output_warnings = path.join(intermediateDir, "output_warnings.n3s")
-let output_results = path.join(intermediateDir, "output_results.n3s")
 
 program
 .option('-p, --port <char>')
@@ -30,9 +18,7 @@ program
         res.setHeader('Content-Type', "text/n3")
         res.write(responseMessage)
         res.end();
-
-        // exec(`rm -r ${intermediateDir}`)
-        
+   
     }).listen(port);
     console.log(`Server listening on port ${port}`)
 }) 
@@ -53,43 +39,103 @@ async function extractBody(req) {
     })
 }
 
-async function processIncomingMessage(body, config) { 
-    console.log('handling incoming message')
 
-    if (!existsSync(intermediateDir)) { 
-        mkdirSync(intermediateDir)
+function read(...args) {
+    return readFileSync(path.join(process.cwd(), ...args)).toString();
+}
+
+export async function n3reasoner(data, query, options) {
+    let res = '';
+    const err = [];
+
+    const Module = await SwiplEye({
+      print: (str) => { res += `${str}\n`; },
+      printErr: (str) => { err.push(str); },
+    });
+
+    const args = ['--nope', '--quiet', '--no-qnames'];
+
+
+    for (let i = 0; i < data.length; i += 1) {
+        args.push(`data_${i}.n3s`);
+        Module.FS.writeFile(`data_${i}.n3s`, data[i]);
     }
 
-    writeFileSync(message_file, body, { encoding: "utf-8" })
+    queryOnce(Module, 'main', args);
     
+    if (err.length > 0) {
+        throw new Error(err.join('\n'));
+    }
+
+    return res;
+}
+
+async function processIncomingMessage(body, config) {
+    console.log('handling incoming message')
+
     console.log('# Extract message information')
-    await writeProcessToFile(`eye --quiet --nope --blogic --no-qnames ${message_file} ./rules/process_message/unpack_message_context.n3`, message_context)
-    await writeProcessToFile(`eye --quiet --nope --blogic --no-qnames ${message_file} ./rules/process_message/unpack_message_data.n3`, message_data)
-    await writeProcessToFile(`eye --quiet --nope --blogic --no-qnames ${message_file} ./rules/process_message/unpack_message_questions.n3`, message_questions)
+
+    const message_context = await n3reasoner([
+        body,
+        read('rules', 'process_message', 'unpack_message_context.n3')
+    ], undefined, { outputType: 'string' });
+    const message_data = await n3reasoner([
+        body,
+        read('rules', 'process_message', 'unpack_message_data.n3')
+    ], undefined, { outputType: 'string' });
+    const message_questions = await n3reasoner([
+        body,
+        read('rules', 'process_message', 'unpack_message_questions.n3')
+    ], undefined, { outputType: 'string' });
 
 
     console.log('# Evaluate policies to calculate available data')
 
-    await writeProcessToFile(`eye --quiet --nope --blogic --no-qnames  ./data/* ${message_data} ${message_context} ./rules/agent_rules/*`, intermediate_output)
+    console.log('message data', JSON.stringify([
+        read('data', 'catalog.n3'),
+        read('data', 'profile.n3'),
+        message_data,
+        message_context,
+        read('rules', 'agent_rules', 'check_birthdate_logic.n3'),
+        read('rules', 'agent_rules', 'filter_viewable_data.n3'),
+        read('rules', 'agent_rules', 'output_warnings.n3'),
+    ], null, 2))
 
-    await writeProcessToFile(`eye --quiet --nope --blogic --no-qnames ${intermediate_output} ./rules/extract_results/display_data.n3`, output_data)
-    await writeProcessToFile(`eye --quiet --nope --blogic --no-qnames ${intermediate_output} ./rules/extract_results/display_warnings.n3`, output_warnings)
-    await writeProcessToFile(`eye --quiet --nope --blogic --no-qnames ${intermediate_output} ./rules/extract_results/extract_questions.n3`, output_questions)
+    const intermediate_output = await n3reasoner([
+        read('data', 'catalog.n3'),
+        read('data', 'profile.n3'),
+        message_data,
+        message_context,
+        read('rules', 'agent_rules', 'check_birthdate_logic.n3'),
+        read('rules', 'agent_rules', 'filter_viewable_data.n3'),
+        read('rules', 'agent_rules', 'output_warnings.n3'),
+    ], undefined, { outputType: 'string' });
+
+    const output_data = await n3reasoner([
+        intermediate_output,
+        read('rules', 'extract_results', 'display_data.n3'),
+    ], undefined, { outputType: 'string' });
+
+    const warnings = await n3reasoner([
+        intermediate_output,
+        read('rules', 'extract_results', 'display_warnings.n3'),
+    ], undefined, { outputType: 'string' });
+
+    const questions = await n3reasoner([
+        intermediate_output,
+        read('rules', 'extract_results', 'extract_questions.n3'),
+    ], undefined, { outputType: 'string' });
 
     console.log('# Evaluate message query over available data')
-    
-    await writeProcessToFile(`eye --quiet --nope --blogic --no-qnames ${message_context} ${message_questions} ${output_data} ./rules/output_data/*`, output_results)
+
+    const contents = await n3reasoner([
+        message_context,
+        message_questions,
+        output_data,
+        read('rules', 'output_data', 'fallback_query.n3'),
+    ]);
 
     console.log('# Formulate response')
-
-
-    let contents = readFileSync(output_results, { encoding: "utf-8" })
-    let questions = readFileSync(output_questions, { encoding: "utf-8" })
-    let warnings = readFileSync(output_warnings, { encoding: "utf-8" })
-
-    contents = contents.replace(/^@prefix.*$\n/gm, '');
-    questions = questions.replace(/^@prefix.*$\n/gm, '');
-    warnings = warnings.replace(/^@prefix.*$\n/gm, '');
 
     // This is still hard-coded
     let responseMessage = generateDialogMessage(
@@ -97,32 +143,10 @@ async function processIncomingMessage(body, config) {
         config.issuer,
         config.client,
         config.endpoint,
-        contents,
-        questions,
-        warnings
+        contents.replace(/^@prefix.*$\n/gm, ''),
+        questions.replace(/^@prefix.*$\n/gm, ''),
+        warnings.replace(/^@prefix.*$\n/gm, '')
     )
 
     return responseMessage
-}
-
-async function writeProcessToFile(command, file) { 
-    console.log("processing command:", command)
-    let dataString = await new Promise((resolve, reject) => { 
-        const process = exec(command)
-        let dataString = ""
-        let errorString = ""
-  
-        process.stdout.on('data', (data) => {
-            dataString += data;
-        })
-        
-        process.stderr.on('data', (error) => {
-            console.error(error);
-        })
-        
-        process.on('exit', (code) => {
-            resolve(dataString)
-        }) 
-    })
-    writeFileSync(file, dataString, {encoding: "utf-8"})
 }

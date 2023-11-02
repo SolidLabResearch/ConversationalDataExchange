@@ -4,10 +4,6 @@ This is a WIP for work on Conversational Data Exchange (Dialogical Reasoning)
 The current implementation can handle receiving a message, formulating a response and returning the response.
 The communication mechanism to exchange the messages is very much still WIP
 
-## Prerequisites
-
-This project requires you to have the latest version of the [EYE reasoner](https://github.com/eyereasoner/eye) available using the `eye` command.
-
 ## Install
 
 ```
